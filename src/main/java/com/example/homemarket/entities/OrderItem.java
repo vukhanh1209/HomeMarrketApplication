@@ -13,19 +13,21 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "favorites")
-public class Favorite implements Serializable {
+@Table(name = "orderDetails")
+public class OrderItem implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long favoriteId;
+	private Long orderDetailId;
+	private int quantity;
+	private Double price;
 
 	@ManyToOne
-	@JoinColumn(name = "userId")
-	private User user;
-
+	@JoinColumn(name = "item_id")
+	private CartItem item;
+	
 	@ManyToOne
-	@JoinColumn(name = "productId")
-	private Product product;
+	@JoinColumn(name = "orderId")
+	private Order order;
 
 }

@@ -1,23 +1,13 @@
 package com.example.homemarket.entities;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 
 @SuppressWarnings("serial")
@@ -39,7 +29,7 @@ public class Order implements Serializable {
 	private int status;
 
 	@OneToMany(mappedBy = "order")
-	private List<OrderDetail> orderDetails;
+	private List<OrderItem> orderDetails;
 
 	@ManyToOne
 	@JoinColumn(name = "userId")

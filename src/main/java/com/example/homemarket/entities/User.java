@@ -1,128 +1,76 @@
 package com.example.homemarket.entities;
 
+import com.example.homemarket.utils.EnumRole;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-
-import javax.persistence.JoinColumn;
+import java.util.List;
 
 
-@SuppressWarnings("serial")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-public class User implements Serializable{
-
+public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long userId;
-	private String name;
+	@Column(name = "user_id", nullable = false)
+	private Integer id;
+
+	@Column(name = "first_name")
+	@NotBlank
+	private String firstName;
+
+	@Column(name = "last_name")
+	@NotBlank
+	private String lastName;
+
+	@NotBlank
+	@NotNull
+	@Email(message = "Email is not valid")
 	private String email;
+
+	@NotBlank
 	private String password;
-	private String avatar;
-	@Temporal(TemporalType.DATE)
-	private Date registerDate;
-	private Boolean status;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "users_roles",
-		joinColumns = @JoinColumn(name = "user_id",
-		referencedColumnName = "userId"),
-		inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+	@Column(name = "phone_number")
+	@Size(max = 10)
+	private String phoneNumber;
 
-	private Collection<Role> roles;
+	@Column(name="default_address")
+	@NotBlank
+	private String defaultAddress;
 
-	public User() {
-		super();
-	}
+	@Column(name = "verification_code")
+	private String verificationCode;
 
-	public User(Long userId, String name, String email, String password, String avatar, Date registerDate,
-			Boolean status, Collection<Role> roles) {
-		super();
-		this.userId = userId;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.avatar = avatar;
-		this.registerDate = registerDate;
-		this.status = status;
-		this.roles = roles;
-	}
+	@Enumerated(EnumType.STRING)
+	private EnumRole roles;
 
-	public Long getUserId() {
-		return userId;
-	}
+	@Column(name = "is_active")
+	private Boolean isActive = false;
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+	@OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+	@JoinColumn(name = "cart_id")
+	private Cart cart;
 
-	public String getName() {
-		return name;
-	}
+	@Column(name = "address")
+	private String addresses;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	@OneToMany(mappedBy = "user")
+	private List<Payment> payments;
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-
-	public Date getRegisterDate() {
-		return registerDate;
-	}
-
-	public void setRegisterDate(Date registerDate) {
-		this.registerDate = registerDate;
-	}
-
-	public Boolean getStatus() {
-		return status;
-	}
-
-	public void setStatus(Boolean status) {
-		this.status = status;
-	}
-
-	public Collection<Role> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(Collection<Role> roles) {
-		this.roles = roles;
-	}
+	@OneToMany(mappedBy = "user")
+	private  List<Order> orders;
 
 }
