@@ -18,7 +18,7 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @GetMapping("/items/{userId}")
+    @GetMapping("/items")
     public ResponseEntity<CartDTO> getCart(@PathVariable Integer userId){
         return ResponseEntity.ok(cartService.getCart(userId));
     }

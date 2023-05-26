@@ -170,9 +170,10 @@ public class UserServiceImpl implements UserService{
     public UserDTO getUser(Integer id) {
         Optional<User> user = userRepository.findById(id);
         if(!user.isPresent()){
-            throw new RuntimeException("Product not found with id: "+id);
+            throw new RuntimeException("User not found with id: "+id);
         }
         UserDTO userDTO = new UserDTO(user.get());
         return userDTO;
     }
+
 }
