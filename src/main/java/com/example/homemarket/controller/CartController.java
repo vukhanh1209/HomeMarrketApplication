@@ -49,7 +49,7 @@ public class CartController {
 //        }
 //    }
     @PostMapping("/add")
-    public ResponseEntity<BaseResponse> createItem(@RequestBody ItemRequestDTO itemRequestDTO){
+    public ResponseEntity<BaseResponse> createItem(@ModelAttribute ItemRequestDTO itemRequestDTO){
         try {
             return ResponseEntity.ok(cartService.createItem(itemRequestDTO));
         }catch (RuntimeException e){
