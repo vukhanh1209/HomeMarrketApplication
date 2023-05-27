@@ -55,7 +55,7 @@ public class User implements Serializable {
 	private String verificationCode;
 
 	@Enumerated(EnumType.STRING)
-	private EnumRole roles;
+	private EnumRole role;
 
 	@Column(name = "is_active")
 	private Boolean isActive = false;

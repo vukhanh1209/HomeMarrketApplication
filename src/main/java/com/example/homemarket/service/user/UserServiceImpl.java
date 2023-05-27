@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService{
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
         user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setRoles(EnumRole.USER);
+        user.setRole(EnumRole.USER);
         user.setIsActive(false);
         user.setVerificationCode(generator.generate(OTP));
         sendEmail(userDTO.getEmail(),"OTP CODE FOR REGISTER","Here is your OTP Code: " + user.getVerificationCode());

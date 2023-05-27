@@ -32,7 +32,7 @@ public class UserDTO extends User {
         this.setLastName(user.getLastName());
         this.setPassword(user.getPassword());
         this.setPhoneNumber(user.getPhoneNumber());
-        this.setRole(user.getRoles());
+        this.setRole(user.getRole());
         this.setIsActive(user.getIsActive());
         this.setCodeActive(user.getVerificationCode());
     }

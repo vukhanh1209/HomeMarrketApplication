@@ -23,6 +23,8 @@ public class Product implements Serializable {
 	private int quantity;
 	private float price;
 	private String weight;
+
+	@Column(name = "product_img_url", nullable = false)
 	private String productImageURL;
 
 	@ManyToOne
