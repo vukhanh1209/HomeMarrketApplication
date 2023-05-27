@@ -19,11 +19,15 @@ public class ProductDTO {
     private Float price;
 
     private String imagePath;
-
+    private String weight;
+    private String category;
     public ProductDTO(Product product){
         this.setId(product.getProductID());
         this.setProductName(product.getProductName());
         this.setPrice(product.getPrice());
+        this.setWeight(product.getWeight());
+        this.setImagePath(product.getProductImageURL());
+        this.setCategory(product.getCategory().getCategoryName());
 //        for (ProductImage productImage : product.getProductImages()){
 //            if(productImage.getThumbnail())
 //                this.setImagePath(productImage.getPath());

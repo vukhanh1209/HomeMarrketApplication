@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItemDTO {
-    private Integer id;
+    private Integer CartItemid;
 
     private String itemName;
 
@@ -19,7 +19,7 @@ public class CartItemDTO {
 
     private Float price;
 
-    private String thumbnailPath;
+    private String weight;
 
     private Integer productId;
 
@@ -27,8 +27,9 @@ public class CartItemDTO {
 
 
     public CartItemDTO(CartItem item){
-        this.setId(item.getCartItemID());
+        this.setCartItemid(item.getCartItemID());
         this.setItemName(item.getProduct().getProductName());
+        this.setWeight(item.getProduct().getWeight());
         this.setQuantity(item.getQuantity());
         this.setPrice(item.getProduct().getPrice());
         this.setProductId(item.getProduct().getProductID());

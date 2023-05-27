@@ -22,7 +22,7 @@ public class Product implements Serializable {
 	private int quantity;
 	private float price;
 	private String productImageURL;
-
+	private String weight;
 	@ManyToOne
 	@JoinColumn(name = "categoryID")
 	private Category category;
