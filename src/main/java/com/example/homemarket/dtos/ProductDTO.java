@@ -21,7 +21,7 @@ public class ProductDTO {
     private String imagePath;
 
     public ProductDTO(Product product){
-//        this.setId(product.getId());
+        this.setId(product.getProductID());
         this.setProductName(product.getProductName());
         this.setPrice(product.getPrice());
 //        for (ProductImage productImage : product.getProductImages()){
