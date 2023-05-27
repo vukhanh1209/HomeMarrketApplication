@@ -27,12 +27,12 @@ public class CartItemDTO {
 
 
     public CartItemDTO(CartItem item){
-        this.setId(item.getId());
-        this.setItemName(item.getItemName());
-        this.setQuantity(item.getQuantity());
-        this.setPrice(item.getPrice());
-        this.setThumbnailPath(item.getThumbnail());
-        this.setProductId(item.getProduct().getId());
-        this.setCartId(item.getCart().getId());
+//        this.setId(item.getId());
+//        this.setItemName(item.getItemName());
+//        this.setQuantity(item.getQuantity());
+//        this.setPrice(item.getPrice());
+//        this.setThumbnailPath(item.getThumbnail());
+//        this.setProductId(item.getProduct().getId());
+//        this.setCartId(item.getCart().getId());
     }
 }

@@ -25,8 +25,8 @@ public class UserDTO extends User {
     private String status;
 
     public UserDTO(User user) {
-        this.setId(user.getId());
-        this.setAddress(user.getDefaultAddress());
+//        this.setId(user.getId());
+//        this.setAddress(user.getDefaultAddress());
         this.setEmail(user.getEmail());
         this.setFirstName(user.getFirstName());
         this.setLastName(user.getLastName());
