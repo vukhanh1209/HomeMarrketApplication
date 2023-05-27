@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface ProductRepository  extends JpaRepository<Product,Integer> {
     @Query("SELECT p FROM Product p WHERE " +
-            "p.productName LIKE CONCAT('%',:query,'%')" +
-            "Or p.description LIKE CONCAT('%',:query,'%')")
+            "p.productName LIKE CONCAT('%',:query,'%')"
+          )
     List<ProductDTO> searchProducts(String query);
 
     List<Product> findAll(Specification<Product> spec, Sort sort);

@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService{
             userDTO.setStatus("Tai Khoan đã dang ky");
             return userDTO;
         }
-        user.setId(userDTO.getId());
-        user.setDefaultAddress(userDTO.getAddress());
+        user.setUserID(userDTO.getUserID());
+        user.setAddress(userDTO.getAddress());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService{
                 else{
                     response.setEmail(user.getEmail());
                     response.setPassword(user.getPassword());
-                    response.setId(user.getId());
+                    response.setId(user.getUserID());
                     response.setStatus("Đăng nhập thành công");
                 }
                 break;
@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService{
     public UserDTO getUser(Integer id) {
         Optional<User> user = userRepository.findById(id);
         if(!user.isPresent()){
-            throw new RuntimeException("Product not found with id: "+id);
+            throw new RuntimeException("User not found with id: "+id);
         }
         UserDTO userDTO = new UserDTO(user.get());
         return userDTO;

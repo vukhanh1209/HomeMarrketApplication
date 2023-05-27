@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO extends User {
-    private Integer id;
+    private Integer userid;
     private String address;
     private String email;
     private String firstName;
@@ -25,8 +25,8 @@ public class UserDTO extends User {
     private String status;
 
     public UserDTO(User user) {
-        this.setId(user.getId());
-        this.setAddress(user.getDefaultAddress());
+        this.setUserID(user.getUserID());
+        this.setAddress(user.getAddress());
         this.setEmail(user.getEmail());
         this.setFirstName(user.getFirstName());
         this.setLastName(user.getLastName());

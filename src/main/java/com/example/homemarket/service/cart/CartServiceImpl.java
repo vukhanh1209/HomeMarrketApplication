@@ -29,7 +29,7 @@ public class CartServiceImpl implements CartService {
     CartRepository cartRepository;
     @Autowired
     UserRepository userRepository;
-//    @Autowired
+    //    @Autowired
 //    ProductImageRepository productImageRepository;
 //    @Autowired
 //    OrderRepository orderRepository;
@@ -41,7 +41,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartDTO getCart(Integer user_id) {
         Cart cart = cartRepository.findByUserId(user_id);
-        List<CartItem> item = itemRepository.findByCartId(cart.getId());
+        List<CartItem> item = itemRepository.findByCartId(cart.getCartID());
         if (cart == null){
             throw new NotFoundException("Do not have products in your cart");
         }
@@ -96,7 +96,7 @@ public class CartServiceImpl implements CartService {
 //        return new BaseResponse(true, "Checkout successfully");
 //    }
 
-//    @Override
+    //    @Override
 //    public CheckoutDTO getCheckoutInfo(Integer userId) {
 //        Optional<User> user = userRepository.findById(userId);
 //        if (!user.isPresent()){
@@ -198,13 +198,11 @@ public class CartServiceImpl implements CartService {
             throw new NotFoundException(String.format("Product with id %d not found.", itemRequestDTO.getProduct_id()));
         }
         int quantityProduct = product.get().getQuantity();
-        Optional<CartItem> itemOptional = Optional.ofNullable(itemRepository.findByProductIdAndCartId(itemRequestDTO.getProduct_id(), cart.get().getId()));
+        Optional<CartItem> itemOptional = Optional.ofNullable(itemRepository.findByProductIdAndCartId(itemRequestDTO.getProduct_id(), cart.get().getCartID()));
         CartItem item = new CartItem();
         if (!itemOptional.isPresent()) {
             if (itemRequestDTO.getQuantity() <= quantityProduct) {
                 item.setProduct(product.get());
-                item.setItemName(product.get().getProductName());
-                item.setPrice(product.get().getPrice());
 //                item.setThumbnail(productImage.getPath());
                 item.setQuantity(itemRequestDTO.getQuantity());
                 item.setCart(cart.get());

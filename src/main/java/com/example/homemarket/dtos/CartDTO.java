@@ -15,14 +15,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartDTO {
-    private Integer id;
+    private Integer CartId;
 
     private Integer userId;
 
     private List<CartItemDTO> itemList;
     public CartDTO(Cart cart){
-        this.setId(cart.getId());
-        this.setUserId(cart.getUser().getId());
+        this.setCartId(cart.getCartID());
+        this.setUserId(cart.getUser().getUserID());
         List<CartItemDTO> itemDTOS = new ArrayList<>();
         for (CartItem singleItem : cart.getItems()){
             CartItemDTO itemDTO = new CartItemDTO(singleItem);
