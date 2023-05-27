@@ -1,6 +1,7 @@
 package com.example.homemarket.controller;
 
 import com.example.homemarket.dtos.CartDTO;
+import com.example.homemarket.dtos.request.ItemEditRequestDTO;
 import com.example.homemarket.dtos.request.ItemRequestDTO;
 import com.example.homemarket.dtos.response.BaseResponse;
 import com.example.homemarket.service.cart.CartService;
@@ -66,6 +67,16 @@ public class CartController {
             return ResponseEntity.
                     status(HttpStatus.INTERNAL_SERVER_ERROR).
                     body(new BaseResponse(false,e.getMessage()));
+        }
+    }
+    @PostMapping("/edit")
+    public ResponseEntity<BaseResponse> update(@ModelAttribute ItemEditRequestDTO itemEditRequestDTO){
+        try {
+            return ResponseEntity.ok(cartService.updateItemQuantity(itemEditRequestDTO));
+        }catch (RuntimeException e){
+            return ResponseEntity.
+                    status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(new BaseResponse(false, e.getMessage()));
         }
     }
 }

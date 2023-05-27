@@ -1,6 +1,7 @@
 package com.example.homemarket.service.cart;
 
 import com.example.homemarket.dtos.CartDTO;
+import com.example.homemarket.dtos.request.ItemEditRequestDTO;
 import com.example.homemarket.dtos.request.ItemRequestDTO;
 import com.example.homemarket.dtos.response.BaseResponse;
 import com.example.homemarket.entities.Cart;
@@ -225,6 +226,22 @@ public class CartServiceImpl implements CartService {
         itemRepository.delete(item);
 
         return new BaseResponse(true, "Delete successfully");
+    }
+    @Override
+    public BaseResponse updateItemQuantity(ItemEditRequestDTO itemEditRequestDTO) {
+        Optional<CartItem> itemOptional = itemRepository.findById(itemEditRequestDTO.getItem_id());
+        CartItem item = itemOptional.get();
+        int quantityProduct = item.getProduct().getQuantity();
+        int newQuantity = itemEditRequestDTO.getQuantity();
+
+        if (newQuantity > quantityProduct) {
+            throw new RuntimeException("New quantity exceeds product quantity.");
+        }
+
+        item.setQuantity(newQuantity);
+        itemRepository.save(item);
+
+        return new BaseResponse(true, "Item quantity updated successfully");
     }
 }
 

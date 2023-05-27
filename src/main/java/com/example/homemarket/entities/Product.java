@@ -26,7 +26,7 @@ public class Product implements Serializable {
 
 	@Column(name = "product_img_url", nullable = false)
 	private String productImageURL;
-
+	private String weight;
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;
