@@ -16,11 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "orders")
+@Table(name = "order")
 public class Order implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "order_id", nullable = false)
 	private Integer orderID;
 	@Temporal(TemporalType.DATE)
 	private Date orderDate;
@@ -36,7 +37,7 @@ public class Order implements Serializable {
 	private List<OrderItem> orderItemList;
 
 	@ManyToOne
-	@JoinColumn(name = "userID")
+	@JoinColumn(name = "user_id")
 	private User user;
 
 }

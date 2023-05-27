@@ -19,11 +19,11 @@ import java.util.List;
 public class Cart implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cartID", nullable = false)
+    @Column(name = "cart_id", nullable = false)
     private Integer cartID;
 
     @OneToOne
-    @JoinColumn(name = "userID", unique = true)
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)

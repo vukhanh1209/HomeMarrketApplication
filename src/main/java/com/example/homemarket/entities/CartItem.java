@@ -14,21 +14,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "item")
+@Table(name = "cartItem")
 public class CartItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cartItemID", nullable = false)
+    @Column(name = "cart_item_id", nullable = false)
     private Integer cartItemID;
 
     private Integer quantity;
 
     @OneToOne
-    @JoinColumn(name = "productID")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "cartID")
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
 }

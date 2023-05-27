@@ -21,7 +21,7 @@ import java.util.List;
 public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "paymentID", nullable = false)
+    @Column(name = "payment_id", nullable = false)
     private Integer paymentID;
 
     private Float totalValue;
@@ -32,12 +32,12 @@ public class Payment implements Serializable {
     private EnumPaymentMethod paymentMethod;
 
     @ManyToOne
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToMany
     @JoinTable(name = "productOnPayment",
-            joinColumns = @JoinColumn(name = "paymentID"),
-            inverseJoinColumns = @JoinColumn(name = "productID"))
+            joinColumns = @JoinColumn(name = "payment_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
 }

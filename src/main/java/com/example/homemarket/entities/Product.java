@@ -12,11 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "products")
+@Table(name = "product")
 public class Product implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "product_id", nullable = false)
 	private Integer productID;
 	private String productName;
 	private int quantity;
@@ -25,7 +26,7 @@ public class Product implements Serializable {
 	private String productImageURL;
 
 	@ManyToOne
-	@JoinColumn(name = "categoryID")
+	@JoinColumn(name = "category_id")
 	private Category category;
 
 
