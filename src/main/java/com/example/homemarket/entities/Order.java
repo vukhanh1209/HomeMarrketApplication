@@ -1,5 +1,6 @@
 package com.example.homemarket.entities;
 
+import com.example.homemarket.utils.EnumOrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,19 +21,22 @@ public class Order implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long orderId;
+	private Integer orderID;
 	@Temporal(TemporalType.DATE)
 	private Date orderDate;
-	private Double amount;
+	private float totalValue;
+	private String userName;
 	private String address;
-	private String phone;
-	private int status;
+	private String phoneNumber;
+
+	@Enumerated(EnumType.STRING)
+	private EnumOrderStatus status;
 
 	@OneToMany(mappedBy = "order")
-	private List<OrderItem> orderDetails;
+	private List<OrderItem> orderItemList;
 
 	@ManyToOne
-	@JoinColumn(name = "userId")
+	@JoinColumn(name = "userID")
 	private User user;
 
 }

@@ -17,19 +17,21 @@ public class Product implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Integer productID;
 	private String productName;
 	private int quantity;
 	private float price;
-	private String productImage;
-	private String description;
+	private String productImageURL;
 
 	@ManyToOne
-	@JoinColumn(name = "categoryId")
+	@JoinColumn(name = "categoryID")
 	private Category category;
 
 
+	@OneToOne(mappedBy = "product")
+	private CartItem cartItem;
+
 	@OneToMany(mappedBy = "product")
-	private List<CartItem> items;
+	private List<OrderItem> orderItemList;
 
 }

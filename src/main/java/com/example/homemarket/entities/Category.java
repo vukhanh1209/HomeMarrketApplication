@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 
 @SuppressWarnings("serial")
@@ -13,11 +14,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "categories")
+@Table(name = "category")
 public class Category implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long categoryId;
+	private Integer categoryID;
 	private String categoryName;
+
+	@OneToMany(mappedBy = "category",  cascade = CascadeType.ALL)
+	private List<Product> productList;
 }
