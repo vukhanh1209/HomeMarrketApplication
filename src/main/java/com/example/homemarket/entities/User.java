@@ -24,14 +24,14 @@ import java.util.List;
 public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id", nullable = false)
-	private Integer id;
+	@Column(name = "userID", nullable = false)
+	private Integer userID;
 
-	@Column(name = "first_name")
+	@Column(name = "firstName")
 	@NotBlank
 	private String firstName;
 
-	@Column(name = "last_name")
+	@Column(name = "lastName")
 	@NotBlank
 	private String lastName;
 
@@ -44,14 +44,14 @@ public class User implements Serializable {
 	private String password;
 
 	@Column(name = "phone_number")
-	@Size(max = 10)
+	@Size(max = 10, min = 10)
 	private String phoneNumber;
 
-	@Column(name="default_address")
+	@Column(name="address")
 	@NotBlank
-	private String defaultAddress;
+	private String address;
 
-	@Column(name = "verification_code")
+	@Column(name = "verificationCode")
 	private String verificationCode;
 
 	@Enumerated(EnumType.STRING)
@@ -61,16 +61,12 @@ public class User implements Serializable {
 	private Boolean isActive = false;
 
 	@OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-	@JoinColumn(name = "cart_id")
 	private Cart cart;
 
-	@Column(name = "address")
-	private String addresses;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Payment> paymentList;
 
-	@OneToMany(mappedBy = "user")
-	private List<Payment> payments;
-
-	@OneToMany(mappedBy = "user")
-	private  List<Order> orders;
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private  List<Order> orderList;
 
 }

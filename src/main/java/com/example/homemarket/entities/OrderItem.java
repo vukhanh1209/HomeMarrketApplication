@@ -13,21 +13,20 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "orderDetails")
+@Table(name = "orderItem")
 public class OrderItem implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long orderDetailId;
+	private Long orderItemID;
 	private int quantity;
-	private Double price;
 
 	@ManyToOne
-	@JoinColumn(name = "item_id")
-	private CartItem item;
+	@JoinColumn(name = "productID")
+	private Product product;
 	
 	@ManyToOne
-	@JoinColumn(name = "orderId")
+	@JoinColumn(name = "orderID")
 	private Order order;
 
 }

@@ -18,27 +18,17 @@ import java.util.List;
 public class CartItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id", nullable = false)
-    private Integer id;
-
-    private String itemName;
+    @Column(name = "cartItemID", nullable = false)
+    private Integer cartItemID;
 
     private Integer quantity;
 
-    private Float price;
-
-    private String thumbnail;
-
-    private Boolean statusCheckout = false;
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @OneToOne
+    @JoinColumn(name = "productID")
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "cartID")
     private Cart cart;
-
-    @OneToMany(mappedBy = "item")
-    private List<OrderItem> orderDetails;
 
 }

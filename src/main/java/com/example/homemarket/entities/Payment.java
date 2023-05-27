@@ -1,5 +1,6 @@
 package com.example.homemarket.entities;
 
+import com.example.homemarket.utils.EnumPaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -18,26 +21,23 @@ import java.sql.Date;
 public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_id", nullable = false)
-    private Integer id;
+    @Column(name = "paymentID", nullable = false)
+    private Integer paymentID;
 
-    @Column(name = "payment_price")
-    private Float paymentPrice;
+    private Float totalValue;
 
-    @Column(name = "payment_date")
     private Date paymentDate;
 
-    @Column(name = "payment_method")
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private EnumPaymentMethod paymentMethod;
 
-    @Column(name = "payment_description")
-    private String paymentDescription;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "userID")
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "order_id", unique = true)
-    private Order order;
+    @ManyToMany
+    @JoinTable(name = "productOnPayment",
+            joinColumns = @JoinColumn(name = "paymentID"),
+            inverseJoinColumns = @JoinColumn(name = "productID"))
+    private List<Product> productList;
 }
