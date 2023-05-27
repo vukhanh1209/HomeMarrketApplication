@@ -11,6 +11,6 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 
     @Query("select c " +
             "from Cart c " +
-            "where c.user.id = :id")
+            "where c.user.userID = :id")
     Cart findByUserId(@Param("id")Integer id);
 }

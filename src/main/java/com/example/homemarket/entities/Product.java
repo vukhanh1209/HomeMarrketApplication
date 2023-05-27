@@ -21,6 +21,7 @@ public class Product implements Serializable {
 	private String productName;
 	private int quantity;
 	private float price;
+	private String weight;
 	private String productImageURL;
 
 	@ManyToOne
