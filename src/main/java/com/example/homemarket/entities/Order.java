@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order implements Serializable {
 
 	@Id
@@ -30,6 +30,7 @@ public class Order implements Serializable {
 	private String userName;
 	private String address;
 	private String phoneNumber;
+	@Enumerated(EnumType.STRING)
     private EnumPaymentMethod paymentMethod;
 	@Enumerated(EnumType.STRING)
 	private EnumOrderStatus status;

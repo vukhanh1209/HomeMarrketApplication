@@ -24,7 +24,7 @@ public class Product implements Serializable {
 	private String productImageURL;
 	private String weight;
 	@ManyToOne
-	@JoinColumn(name = "categoryID")
+	@JoinColumn(name = "category_id")
 	private Category category;
 
 
