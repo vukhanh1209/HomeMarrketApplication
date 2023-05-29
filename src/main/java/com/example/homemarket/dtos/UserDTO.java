@@ -36,7 +36,7 @@ public class UserDTO extends User {
         this.setLastName(user.getLastName());
         this.setPassword(user.getPassword());
         this.setPhoneNumber(user.getPhoneNumber());
-        this.setRole(user.getRoles());
+        this.setRole(user.getRole());
         if(user.getIsActive()==true){
         this.setStatus("Tài khoản đã kích hoạt");
     }
