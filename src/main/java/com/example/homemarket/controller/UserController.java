@@ -20,17 +20,20 @@ public class UserController {
         this.userService = userService;
     }
 
+    @CrossOrigin
     @PostMapping("/register")
-    public ResponseEntity<User> register(@ModelAttribute  UserDTO userDTO){
+    public ResponseEntity<User> register(@RequestBody  UserDTO userDTO){
         return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.OK);
     }
+    @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@ModelAttribute UserLoginResponse userLoginResponse){
+    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginResponse userLoginResponse){
         UserLoginResponse response = userService.login(userLoginResponse);
         return ResponseEntity.ok(response);
     }
+    @CrossOrigin
     @PostMapping("/otp")
-    public ResponseEntity<UserRegisterOtpRespone> otp(@ModelAttribute UserRegisterOtpRespone userRegisterOtpRespone){
+    public ResponseEntity<UserRegisterOtpRespone> otp(@RequestBody UserRegisterOtpRespone userRegisterOtpRespone){
         UserRegisterOtpRespone response = userService.otp(userRegisterOtpRespone);
         return ResponseEntity.ok(response);
     }
