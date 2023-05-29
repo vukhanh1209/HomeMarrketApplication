@@ -1,6 +1,7 @@
 package com.example.homemarket.entities;
 
 import com.example.homemarket.utils.EnumOrderStatus;
+import com.example.homemarket.utils.EnumPaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class Order implements Serializable {
 	private String userName;
 	private String address;
 	private String phoneNumber;
-
+    private EnumPaymentMethod paymentMethod;
 	@Enumerated(EnumType.STRING)
 	private EnumOrderStatus status;
 
@@ -38,5 +39,7 @@ public class Order implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "userID")
 	private User user;
+
+
 
 }

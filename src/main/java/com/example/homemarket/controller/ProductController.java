@@ -27,7 +27,7 @@ public class ProductController {
 //        this.productDetailService = productDetailService;
 //        this.cloudinaryService = cloudinaryService;
     }
-
+    @CrossOrigin
     @GetMapping("/all")
     public ResponseEntity<List<ProductDTO>> getAllProduct(){
         return new ResponseEntity<>(productService.getAllProduct(), HttpStatus.OK);
@@ -47,18 +47,12 @@ public class ProductController {
 //    public ResponseEntity<ProductDetailDTO> getDetailProduct(@PathVariable Integer id){
 //        return new ResponseEntity<>(productDetailService.getProductDetail(id),HttpStatus.OK);
 //    }
+@CrossOrigin
     @GetMapping("/search")
     public ResponseEntity<List<ProductDTO>> getSearchProduct(@RequestParam("key") String query){
         return new ResponseEntity<>(productService.searchProducts(query),HttpStatus.OK);
     }
-    @GetMapping("/filter")
-    public ResponseEntity<List<ProductDTO>> getFilterProduct(@RequestParam("key") String price, @RequestParam("publisher") String nxb){
-        return new ResponseEntity<>(productService.filterProducts(price,nxb),HttpStatus.OK);
-    }
-    @GetMapping("/popular")
-    public ResponseEntity<List<ProductDTO>> getPopularBook(){
-        return new ResponseEntity<>(productService.getPopularBook(), HttpStatus.OK);
-    }
+    @CrossOrigin
     @GetMapping("/productByCategory")
     public ResponseEntity<List<ProductDTO>> listProductByIds(@RequestParam("key") List<Integer> ids) {
         List<ProductDTO> products = productService.listProductByCategories(ids);

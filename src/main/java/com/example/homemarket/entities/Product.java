@@ -19,8 +19,8 @@ public class Product implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer productID;
 	private String productName;
-	private int quantity;
-	private float price;
+	private Integer quantity;
+	private Float price;
 	private String productImageURL;
 	private String weight;
 	@ManyToOne

@@ -35,6 +35,7 @@ public class Payment implements Serializable {
     @JoinColumn(name = "userID")
     private User user;
 
+
     @ManyToMany
     @JoinTable(name = "productOnPayment",
             joinColumns = @JoinColumn(name = "paymentID"),

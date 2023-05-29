@@ -1,9 +1,11 @@
 package com.example.homemarket.controller;
 
 import com.example.homemarket.dtos.CartDTO;
+import com.example.homemarket.dtos.request.PlaceOrderRequestDTO;
 import com.example.homemarket.dtos.request.ItemEditRequestDTO;
 import com.example.homemarket.dtos.request.ItemRequestDTO;
 import com.example.homemarket.dtos.response.BaseResponse;
+import com.example.homemarket.entities.Order;
 import com.example.homemarket.service.cart.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,36 +21,25 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @GetMapping("/items/{userId}")
-    public ResponseEntity<CartDTO> getCart(@PathVariable Integer userId){
+    @CrossOrigin
+    @GetMapping("/items")
+    public ResponseEntity<CartDTO> getCart(@RequestParam("key") Integer userId){
         return ResponseEntity.ok(cartService.getCart(userId));
     }
+
 
 //   @GetMapping("/{id}")
 //    public ResponseEntity<CheckoutDTO> getCheckout(@PathVariable Integer id){
 //        return ResponseEntity.ok(cartService.getCheckoutInfo(id));
 //    }
 
-//    @PostMapping("/buy-now")
-//    public ResponseEntity<BaseResponse> buyNow(@RequestBody CheckoutRequestBuyNowDTO checkoutRequestBuyNowDTO){
-//        try{
-//            return ResponseEntity.ok(cartService.buyNow(checkoutRequestBuyNowDTO));
-//        }catch (RuntimeException e){
-//            return ResponseEntity.
-//                    status(HttpStatus.INTERNAL_SERVER_ERROR).
-//                    body(new BaseResponse(false, e.getMessage()));
-//        }
-//    }
-//    @PostMapping("/checkout")
-//    public ResponseEntity<BaseResponse> checkout(@RequestBody CheckoutRequestDTO checkoutRequestDTO){
-//        try {
-//            return ResponseEntity.ok(cartService.checkout(checkoutRequestDTO));
-//        }catch (RuntimeException e){
-//            return ResponseEntity.
-//                    status(HttpStatus.INTERNAL_SERVER_ERROR).
-//                    body(new BaseResponse(false,e.getMessage()));
-//        }
-//    }
+@CrossOrigin
+@GetMapping("/checkout")
+public ResponseEntity<BaseResponse> checkout(@RequestParam("key") Integer cartId) {
+    BaseResponse response = cartService.checkout(cartId);
+    return ResponseEntity.ok(response);
+}
+    @CrossOrigin
     @PostMapping("/add")
     public ResponseEntity<BaseResponse> createItem(@ModelAttribute ItemRequestDTO itemRequestDTO){
         try {
@@ -59,8 +50,9 @@ public class CartController {
                     body(new BaseResponse(false, e.getMessage()));
         }
     }
-    @DeleteMapping("/delete/{itemId}")
-    public ResponseEntity<BaseResponse> delete(@PathVariable Integer itemId){
+    @CrossOrigin
+    @DeleteMapping("/delete")
+    public ResponseEntity<BaseResponse> delete(@RequestParam("key") Integer itemId){
         try{
             return ResponseEntity.ok(cartService.deleteItem(itemId));
         }catch (RuntimeException e){
@@ -69,10 +61,22 @@ public class CartController {
                     body(new BaseResponse(false,e.getMessage()));
         }
     }
+    @CrossOrigin
     @PostMapping("/edit")
     public ResponseEntity<BaseResponse> update(@ModelAttribute ItemEditRequestDTO itemEditRequestDTO){
         try {
             return ResponseEntity.ok(cartService.updateItemQuantity(itemEditRequestDTO));
+        }catch (RuntimeException e){
+            return ResponseEntity.
+                    status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(new BaseResponse(false, e.getMessage()));
+        }
+    }
+    @CrossOrigin
+    @PostMapping("/place_order")
+    public ResponseEntity<BaseResponse> placeorder(@ModelAttribute PlaceOrderRequestDTO placeOrderRequestDTO){
+        try {
+            return ResponseEntity.ok(cartService.placeorder(placeOrderRequestDTO));
         }catch (RuntimeException e){
             return ResponseEntity.
                     status(HttpStatus.INTERNAL_SERVER_ERROR).
