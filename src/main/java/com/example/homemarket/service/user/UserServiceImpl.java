@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService{
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('0','9').build();
         Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
         if(existingUser.isPresent()){
-            userDTO.setStatus("Tai Khoan đã dang ky");
+            userDTO.setStatus("Tài khoản đã đăng ký");
             return userDTO;
         }
         user.setUserID(userDTO.getUserID());
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService{
         for(User user:users){
             if(user.getEmail().equals(userRegisterOtpRespone.getEmail())){
                 if(!user.getVerificationCode().equals(userRegisterOtpRespone.getOtpCode())){
-                    respone.setStatus("Sai OTP");
+                    respone.setStatus("Mã OTP nhập vào không chính xác");
                     respone.setEmail(user.getEmail());
                 }
                 else{
