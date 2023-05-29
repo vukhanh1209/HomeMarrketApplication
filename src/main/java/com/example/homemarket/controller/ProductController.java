@@ -47,7 +47,7 @@ public class ProductController {
 //    public ResponseEntity<ProductDetailDTO> getDetailProduct(@PathVariable Integer id){
 //        return new ResponseEntity<>(productDetailService.getProductDetail(id),HttpStatus.OK);
 //    }
-@CrossOrigin
+    @CrossOrigin
     @GetMapping("/search")
     public ResponseEntity<List<ProductDTO>> getSearchProduct(@RequestParam("key") String query){
         return new ResponseEntity<>(productService.searchProducts(query),HttpStatus.OK);
