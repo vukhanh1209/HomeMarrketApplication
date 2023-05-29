@@ -1,11 +1,14 @@
 package com.example.homemarket.service.user;
 
+import com.example.homemarket.dtos.OrderDTO;
 import com.example.homemarket.dtos.UserDTO;
 import com.example.homemarket.dtos.response.UserForgetPasswordResponse;
 import com.example.homemarket.dtos.response.UserLoginResponse;
 import com.example.homemarket.dtos.response.UserRegisterOtpRespone;
 import com.example.homemarket.dtos.response.UserResetPasswordResponse;
+import com.example.homemarket.entities.Order;
 import com.example.homemarket.entities.User;
+import com.example.homemarket.repositories.OrderRepository;
 import com.example.homemarket.repositories.UserRepository;
 import com.example.homemarket.utils.EnumRole;
 import org.apache.commons.text.RandomStringGenerator;
@@ -23,6 +26,8 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
     @Autowired
     private JavaMailSender mailSender;
+    @Autowired
+    private OrderRepository orderRepository;
     public void sendEmail(String toEmail, String subject, String body){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("enddismyrapname@gmail.com");

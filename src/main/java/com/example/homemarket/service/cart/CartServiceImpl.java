@@ -1,24 +1,26 @@
 package com.example.homemarket.service.cart;
 
-import com.example.homemarket.dtos.CartDTO;
+import com.example.homemarket.dtos.*;
 import com.example.homemarket.dtos.request.ItemEditRequestDTO;
 import com.example.homemarket.dtos.request.ItemRequestDTO;
+import com.example.homemarket.dtos.request.PlaceOrderRequestDTO;
 import com.example.homemarket.dtos.response.BaseResponse;
-import com.example.homemarket.entities.Cart;
-import com.example.homemarket.entities.CartItem;
-import com.example.homemarket.entities.Product;
-import com.example.homemarket.entities.User;
+import com.example.homemarket.dtos.response.CheckoutDTO;
+import com.example.homemarket.dtos.response.ItemCheckResultDTO;
+import com.example.homemarket.entities.*;
 import com.example.homemarket.exceptions.NotFoundException;
-import com.example.homemarket.repositories.CartItemRepository;
-import com.example.homemarket.repositories.CartRepository;
-import com.example.homemarket.repositories.ProductRepository;
-import com.example.homemarket.repositories.UserRepository;
+import com.example.homemarket.repositories.*;
+import com.example.homemarket.utils.EnumOrderStatus;
+import com.example.homemarket.utils.EnumPaymentMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -32,12 +34,12 @@ public class CartServiceImpl implements CartService {
     UserRepository userRepository;
     //    @Autowired
 //    ProductImageRepository productImageRepository;
-//    @Autowired
-//    OrderRepository orderRepository;
-//    @Autowired
-//    OrderDetailRepository orderDetailRepository;
-//    @Autowired
-//    PaymentRepository paymentRepository;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    OrderDetailRepository orderDetailRepository;
+    @Autowired
+    PaymentRepository paymentRepository;
     @Transactional(readOnly = true)
     @Override
     public CartDTO getCart(Integer user_id) {
@@ -54,127 +56,114 @@ public class CartServiceImpl implements CartService {
         }
         return new CartDTO(cart);
     }
-//    @Override
-//    @Transactional
-//    public BaseResponse buyNow(CheckoutRequestBuyNowDTO checkoutRequestBuyNowDTO) {
-//        User user = userRepository.findById(checkoutRequestBuyNowDTO.getUserId()).
-//                orElseThrow(()-> new NotFoundException(String.format("User with id %d not found", checkoutRequestBuyNowDTO.getUserId())));
-//
-//        Order order = new Order();
-//        order.setPhoneNumber(checkoutRequestBuyNowDTO.getPhone());
-//        order.setTotal(checkoutRequestBuyNowDTO.getTotalPrice());
-//        order.setStatus("Pending");
-//        order.setUser(user);
-//        orderRepository.save(order);
-//
-//        Item item = new Item();
-//        item.setItemName(checkoutRequestBuyNowDTO.getItemDetail().getItemName());
-//        item.setPrice(checkoutRequestBuyNowDTO.getItemDetail().getPrice());
-//        item.setQuantity(checkoutRequestBuyNowDTO.getItemDetail().getQuantity());
-//        item.setThumbnail(checkoutRequestBuyNowDTO.getItemDetail().getThumbnailPath());
-//        item.setStatusCheckout(true);
-//
-//        Product product = productRepository.findById(checkoutRequestBuyNowDTO.getItemDetail().getProductId()).
-//                orElseThrow(() -> new NotFoundException(String.format("Product with id %d not found", checkoutRequestBuyNowDTO.getItemDetail().getProductId())));
-//        product.setQuantity(product.getQuantity() - checkoutRequestBuyNowDTO.getItemDetail().getQuantity());
-//        item.setProduct(product);
-//        itemRepository.save(item);
-//        productRepository.save(product);
-//
-//        OrderDetail orderDetail = new OrderDetail();
-//        orderDetail.setPrice(checkoutRequestBuyNowDTO.getItemDetail().getPrice());
-//        orderDetail.setQuantity(checkoutRequestBuyNowDTO.getItemDetail().getQuantity());
-//        orderDetail.setItem(item);
-//        orderDetail.setOrder(order);
-//        orderDetailRepository.save(orderDetail);
-//
-//        Payment payment = new Payment();
-//        payment.setPaymentMethod(checkoutRequestBuyNowDTO.getPaymentMethod());
-//        payment.setPaymentPrice(checkoutRequestBuyNowDTO.getTotalPrice());
-//        payment.setUser(user);
-//        payment.setOrder(order);
-//        paymentRepository.save(payment);
-//        return new BaseResponse(true, "Checkout successfully");
-//    }
+        @Override
+    public CheckoutDTO getCheckoutInfo(Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (!user.isPresent()){
+            throw new NotFoundException(String.format("User with id %d not found", userId));
+        }
+        CheckoutDTO checkoutDTO = new CheckoutDTO();
+        checkoutDTO.setUserId(userId);
+        checkoutDTO.setUserName(user.get().getFirstName() + user.get().getLastName());
+        checkoutDTO.setAddress(user.get().getAddress());
+        checkoutDTO.setPhone(user.get().getPhoneNumber());
+        return checkoutDTO;
+    }
+    @Override
+    @Transactional
+    public BaseResponse checkout(Integer cart_id) {
+        Optional<Cart> cartOptional = cartRepository.findById(cart_id);
+        if (!cartOptional.isPresent()) {
+            throw new NotFoundException(String.format("Cart with id %d not found", cart_id));
+        }
 
-    //    @Override
-//    public CheckoutDTO getCheckoutInfo(Integer userId) {
-//        Optional<User> user = userRepository.findById(userId);
-//        if (!user.isPresent()){
-//            throw new NotFoundException(String.format("User with id %d not found", userId));
-//        }
-//        CheckoutDTO checkoutDTO = new CheckoutDTO();
-//        checkoutDTO.setUserId(userId);
-//        checkoutDTO.setUserName(user.get().getFirstName() + user.get().getLastName());
-//        checkoutDTO.setAddress(user.get().getDefaultAddress());
-//        checkoutDTO.setPhone(user.get().getPhoneNumber());
-//        return checkoutDTO;
-//    }
-//
-//    @Override
-//    @Transactional
-//    public BaseResponse checkout(CheckoutRequestDTO checkoutRequestDTO) {
-//        Optional<User> user = userRepository.findById(checkoutRequestDTO.getUserId());
-//        if (!user.isPresent()){
-//            throw new NotFoundException(String.format("User with id %d not found", checkoutRequestDTO.getUserId()));
-//        }
-//        Order order = new Order();
-//        order.setPhoneNumber(checkoutRequestDTO.getPhone());
-//        order.setTotal(checkoutRequestDTO.getTotalPrice());
-//        order.setStatus("Pending");
-//        order.setUser(user.get());
-//        orderRepository.save(order);
-//
-//        List<Item> items = new ArrayList<>();
-//        List<OrderDetail> orderDetails = new ArrayList<>();
-//
-//        for (ItemDTO itemDTO : checkoutRequestDTO.getItemDTOS()){
-//            Item item = new Item();
-//            item.setId(itemDTO.getId());
-//            item.setStatusCheckout(true);
-//            item.setItemName(itemDTO.getItemName());
-//            item.setPrice(itemDTO.getPrice());
-//            item.setQuantity(itemDTO.getQuantity());
-//
-//            Optional<Cart> cart = cartRepository.findById(itemDTO.getCartId());
-//            if (!cart.isPresent()){
-//                throw new NotFoundException(String.format("Cart with id %d not found", itemDTO.getCartId()));
-//            }
-//            item.setCart(cart.get());
-//
-//            Optional<Product> product = productRepository.findById(itemDTO.getProductId());
-//            if (!product.isPresent()){
-//                throw new NotFoundException(String.format("Product with id %d not found",itemDTO.getProductId()));
-//            }
-//            product.get().setQuantity(product.get().getQuantity() - itemDTO.getQuantity());
-//            item.setProduct(product.get());
-//            item.setThumbnail(itemDTO.getThumbnailPath());
-//            items.add(item);
-//
-//            OrderDetail orderDetail = new OrderDetail();
-//            orderDetail.setPrice(itemDTO.getPrice());
-//            orderDetail.setQuantity(itemDTO.getQuantity());
-//            orderDetail.setItem(item);
-//            orderDetail.setOrder(order);
-//            orderDetails.add(orderDetail);
-//        }
-//
-//        itemRepository.saveAll(items);
-//        orderDetailRepository.saveAll(orderDetails);
-//        List<Product> products = items.stream()
-//                .filter(item -> item.getProduct() != null)
-//                .map(Item::getProduct)
-//                .collect(Collectors.toList());
-//        productRepository.saveAll(products);
-//
-//        Payment payment = new Payment();
-//        payment.setPaymentMethod(checkoutRequestDTO.getPaymentMethod());
-//        payment.setPaymentPrice(checkoutRequestDTO.getTotalPrice());
-//        payment.setOrder(order);
-//        payment.setUser(user.get());
-//        paymentRepository.save(payment);
-//        return new BaseResponse(true, "Checkout successfully");
-//    }
+        Cart cart = cartOptional.get();
+        List<CartItem> cartItems = cart.getItems();
+        List<ItemCheckResultDTO> itemCheckResults = new ArrayList<>();
+
+        boolean allItemsAvailable = true;
+
+        for (CartItem cartItem : cartItems) {
+            int requestedQuantity = cartItem.getQuantity();
+            int availableQuantity = cartItem.getProduct().getQuantity();
+
+            if (availableQuantity < requestedQuantity) {
+                ItemCheckResultDTO itemCheckResult = new ItemCheckResultDTO(cartItem.getProduct().getProductName(), requestedQuantity, availableQuantity, false);
+                itemCheckResults.add(itemCheckResult);
+                allItemsAvailable = false;
+            }
+        }
+
+        if (allItemsAvailable) {
+            return new BaseResponse(true, "Checkout successful");
+        } else {
+            return new BaseResponse(false, "Some items are out of stock", itemCheckResults);
+        }
+    }
+    @Override
+    @Transactional
+    public BaseResponse placeorder(PlaceOrderRequestDTO orderRequestDTO) {
+        try {
+            Optional<Cart> cartOptional = cartRepository.findById(orderRequestDTO.getCartID());
+            if (!cartOptional.isPresent()) {
+                throw new NotFoundException(String.format("Cart with id %d not found", orderRequestDTO.getCartID()));
+            }
+
+            User user = userRepository.findById(cartOptional.get().getUser().getUserID())
+                    .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", cartOptional.get().getUser().getUserID())));
+
+            Order order = new Order();
+            order.setPhoneNumber(orderRequestDTO.getPhone());
+            order.setAddress(orderRequestDTO.getAddress());
+            order.setStatus(EnumOrderStatus.WAITING);
+            order.setPaymentMethod(orderRequestDTO.getPaymentMethod());
+            order.setUser(user);
+            order.setUserName(user.getFirstName() + " " + user.getLastName());
+            order.setOrderDate(orderRequestDTO.getOrderDate());
+
+            List<ItemCheckResultDTO> itemCheckResults = new ArrayList<>();
+            List<OrderItem> orderDetails = new ArrayList<>();
+            float totalValue = 0.0f;
+            List<CartItem> cartItems = cartOptional.get().getItems();
+            for (CartItem itemDTO : cartItems) {
+                Optional<Product> productOptional = productRepository.findById(itemDTO.getProduct().getProductID());
+                if (!productOptional.isPresent()) {
+                    throw new NotFoundException(String.format("Product with id %d not found", itemDTO.getProduct().getProductID()));
+                }
+                Product product = productOptional.get();
+
+                if (product.getQuantity() < itemDTO.getQuantity()) {
+                    ItemCheckResultDTO itemCheckResult = new ItemCheckResultDTO(product.getProductName(), itemDTO.getQuantity(), product.getQuantity(), false);
+                    itemCheckResults.add(itemCheckResult);
+                } else {
+                    product.setQuantity(product.getQuantity() - itemDTO.getQuantity());
+                    productRepository.save(product);
+                    float itemTotal = itemDTO.getProduct().getPrice() * itemDTO.getQuantity();
+                    totalValue += itemTotal;
+
+                    OrderItem orderDetail = new OrderItem();
+                    orderDetail.setProduct(itemDTO.getProduct());
+                    orderDetail.setQuantity(itemDTO.getQuantity());
+                    orderDetail.setOrder(order);
+                    orderDetails.add(orderDetail);
+                }
+            }
+            order.setTotalValue(totalValue);
+            orderDetailRepository.saveAll(orderDetails);
+            order.setOrderItemList(orderDetails);
+            orderRepository.save(order);
+            if (!itemCheckResults.isEmpty()) {
+                return new BaseResponse(false, "Insufficient quantity for some items", itemCheckResults);
+            }
+            return new BaseResponse(true, "Place Order successfully");
+        } catch (NotFoundException ex) {
+            // Xử lý ngoại lệ NotFoundException
+            return new BaseResponse(false, ex.getMessage());
+        } catch (Exception ex) {
+            // Xử lý các ngoại lệ khác
+            return new BaseResponse(false, "An error occurred during order placement");
+        }
+    }
     @Override
     @Transactional
     public BaseResponse createItem(ItemRequestDTO itemRequestDTO) {
@@ -243,6 +232,14 @@ public class CartServiceImpl implements CartService {
 
         return new BaseResponse(true, "Item quantity updated successfully");
     }
+//    @Override
+//    public UserDTO getOrder(Integer id) {
+//        Optional<User> user = userRepository.findById(id);
+//        if(!user.isPresent()){
+//            throw new RuntimeException("User not found with id: "+id);
+//        }
+//        return user.get().getOrderList();
+//    }
 }
 
 

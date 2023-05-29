@@ -28,9 +28,5 @@ public class ProductDTO {
         this.setWeight(product.getWeight());
         this.setImagePath(product.getProductImageURL());
         this.setCategory(product.getCategory().getCategoryName());
-//        for (ProductImage productImage : product.getProductImages()){
-//            if(productImage.getThumbnail())
-//                this.setImagePath(productImage.getPath());
-//        }
     }
 }

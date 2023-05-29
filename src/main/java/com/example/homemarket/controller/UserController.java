@@ -1,10 +1,12 @@
 package com.example.homemarket.controller;
 
+import com.example.homemarket.dtos.OrderDTO;
 import com.example.homemarket.dtos.UserDTO;
 import com.example.homemarket.dtos.response.UserForgetPasswordResponse;
 import com.example.homemarket.dtos.response.UserLoginResponse;
 import com.example.homemarket.dtos.response.UserRegisterOtpRespone;
 import com.example.homemarket.dtos.response.UserResetPasswordResponse;
+import com.example.homemarket.entities.Order;
 import com.example.homemarket.entities.User;
 import com.example.homemarket.service.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -19,42 +21,38 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
     @CrossOrigin
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody  UserDTO userDTO){
+    public ResponseEntity<User> register(@ModelAttribute  UserDTO userDTO){
         return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.OK);
     }
     @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginResponse userLoginResponse){
+    public ResponseEntity<UserLoginResponse> login(@ModelAttribute UserLoginResponse userLoginResponse){
         UserLoginResponse response = userService.login(userLoginResponse);
         return ResponseEntity.ok(response);
     }
     @CrossOrigin
     @PostMapping("/otp")
-    public ResponseEntity<UserRegisterOtpRespone> otp(@RequestBody UserRegisterOtpRespone userRegisterOtpRespone){
+    public ResponseEntity<UserRegisterOtpRespone> otp(@ModelAttribute UserRegisterOtpRespone userRegisterOtpRespone){
         UserRegisterOtpRespone response = userService.otp(userRegisterOtpRespone);
         return ResponseEntity.ok(response);
     }
+    @CrossOrigin
     @PostMapping("/forgetPassword")
     public ResponseEntity<UserForgetPasswordResponse> forgetPassword(@ModelAttribute UserForgetPasswordResponse userForgetPasswordResponse){
         UserForgetPasswordResponse response = userService.forgetPassword(userForgetPasswordResponse);
         return ResponseEntity.ok(response);
     }
+    @CrossOrigin
     @PostMapping("/resetPassword")
     public ResponseEntity<UserResetPasswordResponse> resetPassword(@ModelAttribute UserResetPasswordResponse userResetPasswordResponse){
         UserResetPasswordResponse response = userService.resetPassword(userResetPasswordResponse);
         return ResponseEntity.ok(response);
     }
-//   @GetMapping("/{userId}")
-//   public ResponseEntity<UserDTO> getUser(@PathVariable Integer userId){
-//       return new ResponseEntity<>(user)
-//   }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Integer userId){
+    @CrossOrigin
+    @GetMapping("/getuser")
+    public ResponseEntity<UserDTO> getUser(@RequestParam("key") Integer userId){
         return new ResponseEntity<>(userService.getUser(userId),HttpStatus.OK);
     }
-
 }
