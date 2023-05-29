@@ -43,10 +43,26 @@ public class UserServiceImpl implements UserService{
         User user = new User();
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('0','9').build();
         Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
-        if(existingUser.isPresent()){
+        if(existingUser.isPresent() && existingUser.get().getIsActive()==true){
             userDTO.setStatus("Tài khoản đã đăng ký");
+            userDTO.setIsActive(true);
             return userDTO;
         }
+        if(existingUser.isPresent() && existingUser.get().getIsActive()==false){
+            userRepository.delete(existingUser.get());
+            user.setUserID(userDTO.getUserID());
+            user.setAddress(userDTO.getAddress());
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setEmail(userDTO.getEmail());
+            user.setPassword(userDTO.getPassword());
+            user.setPhoneNumber(userDTO.getPhoneNumber());
+            user.setRole(EnumRole.USER);
+            user.setIsActive(false);
+            user.setVerificationCode(generator.generate(OTP));
+            sendEmail(userDTO.getEmail(),"OTP CODE FOR REGISTER","Here is your OTP Code: " + user.getVerificationCode());
+        }
+        else{
         user.setUserID(userDTO.getUserID());
         user.setAddress(userDTO.getAddress());
         user.setFirstName(userDTO.getFirstName());
@@ -58,6 +74,7 @@ public class UserServiceImpl implements UserService{
         user.setIsActive(false);
         user.setVerificationCode(generator.generate(OTP));
         sendEmail(userDTO.getEmail(),"OTP CODE FOR REGISTER","Here is your OTP Code: " + user.getVerificationCode());
+        }
         return userRepository.save(user);
     }
 
