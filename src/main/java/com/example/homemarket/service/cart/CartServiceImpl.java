@@ -74,7 +74,7 @@ public class CartServiceImpl implements CartService {
     public BaseResponse checkout(Integer cart_id) {
         Optional<Cart> cartOptional = cartRepository.findById(cart_id);
         if (!cartOptional.isPresent()) {
-            throw new NotFoundException(String.format("Cart with id %d not found", cart_id));
+            throw new NotFoundException(String.format("Không tìm thấy giỏ hàng với id %d", cart_id));
         }
 
         Cart cart = cartOptional.get();
@@ -95,9 +95,9 @@ public class CartServiceImpl implements CartService {
         }
 
         if (allItemsAvailable) {
-            return new BaseResponse(true, "Checkout successful");
+            return new BaseResponse(true, "Mua hàng thành công");
         } else {
-            return new BaseResponse(false, "Some items are out of stock", itemCheckResults);
+            return new BaseResponse(false, "Sản phẩm không vượt quá số lượng trong kho", itemCheckResults);
         }
     }
     @Override
@@ -106,11 +106,11 @@ public class CartServiceImpl implements CartService {
         try {
             Optional<Cart> cartOptional = cartRepository.findById(orderRequestDTO.getCartID());
             if (!cartOptional.isPresent()) {
-                throw new NotFoundException(String.format("Cart with id %d not found", orderRequestDTO.getCartID()));
+                throw new NotFoundException(String.format("Không tìm thấy giỏ hàng với id %d", orderRequestDTO.getCartID()));
             }
 
             User user = userRepository.findById(cartOptional.get().getUser().getUserID())
-                    .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", cartOptional.get().getUser().getUserID())));
+                    .orElseThrow(() -> new NotFoundException(String.format("Không tìm thấy khách hàng với id %d", cartOptional.get().getUser().getUserID())));
 
             Order order = new Order();
             order.setPhoneNumber(orderRequestDTO.getPhone());
@@ -128,7 +128,7 @@ public class CartServiceImpl implements CartService {
             for (CartItem itemDTO : cartItems) {
                 Optional<Product> productOptional = productRepository.findById(itemDTO.getProduct().getProductID());
                 if (!productOptional.isPresent()) {
-                    throw new NotFoundException(String.format("Product with id %d not found", itemDTO.getProduct().getProductID()));
+                    throw new NotFoundException(String.format("Không tìm thấy sản phẩm với id %d", itemDTO.getProduct().getProductID()));
                 }
                 Product product = productOptional.get();
 
@@ -153,9 +153,9 @@ public class CartServiceImpl implements CartService {
             order.setOrderItemList(orderDetails);
             orderRepository.save(order);
             if (!itemCheckResults.isEmpty()) {
-                return new BaseResponse(false, "Insufficient quantity for some items", itemCheckResults);
+                return new BaseResponse(false, "Sản phẩm không vượt quá số lượng trong kho", itemCheckResults);
             }
-            return new BaseResponse(true, "Place Order successfully");
+            return new BaseResponse(true, "Đặt hàng thành công");
         } catch (NotFoundException ex) {
             // Xử lý ngoại lệ NotFoundException
             return new BaseResponse(false, ex.getMessage());
@@ -196,16 +196,16 @@ public class CartServiceImpl implements CartService {
 //                item.setThumbnail(productImage.getPath());
                 item.setQuantity(itemRequestDTO.getQuantity());
                 item.setCart(cart.get());
-            } else throw new RuntimeException("Quantity of product is larger than in warehouse");
+            } else throw new RuntimeException("Vượt quá số lượng tồn kho");
         } else {
             int totalQuantity = itemOptional.get().getQuantity() + itemRequestDTO.getQuantity();
             if (totalQuantity <= quantityProduct) {
                 item = itemOptional.get();
                 item.setQuantity(totalQuantity);
-            } else throw new RuntimeException("Quantity of item no more than product quantity");
+            } else throw new RuntimeException("Vượt quá số lượng tồn kho");
         }
         itemRepository.save(item);
-        return new BaseResponse(true, "Adding product to cart successfully");
+        return new BaseResponse(true, "Thêm vào giỏ hàng thành công");
     }
 
     @Override
@@ -224,7 +224,7 @@ public class CartServiceImpl implements CartService {
         int newQuantity = itemEditRequestDTO.getQuantity();
 
         if (newQuantity > quantityProduct) {
-            throw new RuntimeException("New quantity exceeds product quantity.");
+            throw new RuntimeException("Vượt quá số lượng trong kho");
         }
 
         item.setQuantity(newQuantity);
