@@ -10,10 +10,12 @@ import com.example.homemarket.dtos.response.BaseResponse;
 import com.example.homemarket.dtos.response.CheckoutDTO;
 import com.example.homemarket.entities.Order;
 
+import java.util.List;
+
 public interface CartService {
     CartDTO getCart(Integer userId);
     CheckoutDTO getCheckoutInfo(Integer userId);
-    BaseResponse checkout(Integer user_id);
+    BaseResponse checkout(List<Integer> cartItemIds);
     BaseResponse createItem(ItemRequestDTO itemRequestDTO);
     BaseResponse deleteItem(Integer itemId);
     BaseResponse updateItemQuantity(ItemEditRequestDTO itemEditRequestDTO);

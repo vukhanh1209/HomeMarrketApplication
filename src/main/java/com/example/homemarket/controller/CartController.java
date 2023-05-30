@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
@@ -35,8 +37,8 @@ public class CartController {
 
     @CrossOrigin
     @GetMapping("/checkout")
-    public ResponseEntity<BaseResponse> checkout(@RequestParam("key") Integer cartId) {
-        BaseResponse response = cartService.checkout(cartId);
+    public ResponseEntity<BaseResponse> checkout(@RequestParam("key") List<Integer> cartItemId) {
+        BaseResponse response = cartService.checkout(cartItemId);
         return ResponseEntity.ok(response);
     }
     @CrossOrigin

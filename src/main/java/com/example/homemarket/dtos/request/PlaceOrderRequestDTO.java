@@ -23,7 +23,7 @@ public class PlaceOrderRequestDTO {
     private String address;
     private String phone;
     private EnumPaymentMethod paymentMethod;
-    private Integer cartID;
+    private List<Integer> cartItemID;
     private String firstName;
     private  String lastName;
 }
