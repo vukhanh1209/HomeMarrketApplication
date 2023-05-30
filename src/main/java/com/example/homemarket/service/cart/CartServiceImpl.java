@@ -43,18 +43,18 @@ public class CartServiceImpl implements CartService {
     @Transactional(readOnly = true)
     @Override
     public CartDTO getCart(Integer user_id) {
-        Cart cart = cartRepository.findByUserId(user_id);
-        List<CartItem> item = itemRepository.findByCartId(cart.getCartID());
-        if (cart == null){
-            throw new NotFoundException("Do not have products in your cart");
+        Optional<Cart> cart = Optional.ofNullable(cartRepository.findByUserId(user_id));
+        if (!cart.isPresent()) {
+            throw new RuntimeException("User not found with id: " + user_id);
         }
-        if (item.stream().count() == 0){
-            throw new NotFoundException("Do not have products in your cart");
+
+        List<CartItem> items = itemRepository.findByCartId(cart.get().getCartID());
+        if (items.isEmpty()) {
+            throw new RuntimeException("No items found in the cart with id: " + cart.get().getCartID());
         }
-        else{
-            cart.setItems(item);
-        }
-        return new CartDTO(cart);
+
+        cart.get().setItems(items);
+        return new CartDTO(cart.get());
     }
         @Override
     public CheckoutDTO getCheckoutInfo(Integer userId) {
@@ -118,7 +118,7 @@ public class CartServiceImpl implements CartService {
             order.setStatus(EnumOrderStatus.WAITING);
             order.setPaymentMethod(orderRequestDTO.getPaymentMethod());
             order.setUser(user);
-            order.setUserName(user.getFirstName() + " " + user.getLastName());
+            order.setUserName(orderRequestDTO.getFirstName() + " " + orderRequestDTO.getLastName());
             order.setOrderDate(orderRequestDTO.getOrderDate());
 
             List<ItemCheckResultDTO> itemCheckResults = new ArrayList<>();

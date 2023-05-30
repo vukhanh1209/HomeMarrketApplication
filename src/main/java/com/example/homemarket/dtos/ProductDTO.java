@@ -17,7 +17,7 @@ public class ProductDTO {
     private String productName;
 
     private Float price;
-
+    private Integer Quantity;
     private String imagePath;
     private String weight;
     private String category;
@@ -28,5 +28,6 @@ public class ProductDTO {
         this.setWeight(product.getWeight());
         this.setImagePath(product.getProductImageURL());
         this.setCategory(product.getCategory().getCategoryName());
+        this.setQuantity(product.getQuantity());
     }
 }
