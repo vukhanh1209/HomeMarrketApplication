@@ -41,7 +41,7 @@ public class CartController {
     }
     @CrossOrigin
     @PostMapping("/add")
-    public ResponseEntity<BaseResponse> createItem(@RequestBody ItemRequestDTO itemRequestDTO){
+    public ResponseEntity<BaseResponse> createItem(@ModelAttribute ItemRequestDTO itemRequestDTO){
         try {
             return ResponseEntity.ok(cartService.createItem(itemRequestDTO));
         }catch (RuntimeException e){
@@ -63,7 +63,7 @@ public class CartController {
     }
     @CrossOrigin
     @PostMapping("/edit")
-    public ResponseEntity<BaseResponse> update(@RequestBody ItemEditRequestDTO itemEditRequestDTO){
+    public ResponseEntity<BaseResponse> update(@ModelAttribute ItemEditRequestDTO itemEditRequestDTO){
         try {
             return ResponseEntity.ok(cartService.updateItemQuantity(itemEditRequestDTO));
         }catch (RuntimeException e){
@@ -74,7 +74,7 @@ public class CartController {
     }
     @CrossOrigin
     @PostMapping("/place_order")
-    public ResponseEntity<BaseResponse> placeorder(@RequestBody PlaceOrderRequestDTO placeOrderRequestDTO){
+    public ResponseEntity<BaseResponse> placeorder(@ModelAttribute PlaceOrderRequestDTO placeOrderRequestDTO){
         try {
             return ResponseEntity.ok(cartService.placeorder(placeOrderRequestDTO));
         }catch (RuntimeException e){
