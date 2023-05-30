@@ -23,30 +23,30 @@ public class UserController {
     }
     @CrossOrigin
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody  UserDTO userDTO){
+    public ResponseEntity<User> register(@ModelAttribute  UserDTO userDTO){
         return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.OK);
     }
     @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginResponse userLoginResponse){
+    public ResponseEntity<UserLoginResponse> login(@ModelAttribute UserLoginResponse userLoginResponse){
         UserLoginResponse response = userService.login(userLoginResponse);
         return ResponseEntity.ok(response);
     }
     @CrossOrigin
     @PostMapping("/otp")
-    public ResponseEntity<UserRegisterOtpRespone> otp(@RequestBody UserRegisterOtpRespone userRegisterOtpRespone){
+    public ResponseEntity<UserRegisterOtpRespone> otp(@ModelAttribute UserRegisterOtpRespone userRegisterOtpRespone){
         UserRegisterOtpRespone response = userService.otp(userRegisterOtpRespone);
         return ResponseEntity.ok(response);
     }
     @CrossOrigin
     @PostMapping("/forgetPassword")
-    public ResponseEntity<UserForgetPasswordResponse> forgetPassword(@RequestBody UserForgetPasswordResponse userForgetPasswordResponse){
+    public ResponseEntity<UserForgetPasswordResponse> forgetPassword(@ModelAttribute UserForgetPasswordResponse userForgetPasswordResponse){
         UserForgetPasswordResponse response = userService.forgetPassword(userForgetPasswordResponse);
         return ResponseEntity.ok(response);
     }
     @CrossOrigin
     @PostMapping("/resetPassword")
-    public ResponseEntity<UserResetPasswordResponse> resetPassword(@RequestBody UserResetPasswordResponse userResetPasswordResponse){
+    public ResponseEntity<UserResetPasswordResponse> resetPassword(@ModelAttribute UserResetPasswordResponse userResetPasswordResponse){
         UserResetPasswordResponse response = userService.resetPassword(userResetPasswordResponse);
         return ResponseEntity.ok(response);
     }

@@ -32,6 +32,8 @@ public class CartServiceImpl implements CartService {
     CartRepository cartRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    CartItemRepository cartItemRepository;
     //    @Autowired
 //    ProductImageRepository productImageRepository;
     @Autowired
@@ -71,19 +73,18 @@ public class CartServiceImpl implements CartService {
     }
     @Override
     @Transactional
-    public BaseResponse checkout(Integer cart_id) {
-        Optional<Cart> cartOptional = cartRepository.findById(cart_id);
-        if (!cartOptional.isPresent()) {
-            throw new NotFoundException(String.format("Không tìm thấy giỏ hàng với id %d", cart_id));
-        }
-
-        Cart cart = cartOptional.get();
-        List<CartItem> cartItems = cart.getItems();
+    public BaseResponse checkout(List<Integer> cartItemIds) {
         List<ItemCheckResultDTO> itemCheckResults = new ArrayList<>();
 
         boolean allItemsAvailable = true;
 
-        for (CartItem cartItem : cartItems) {
+        for (Integer cartItemId : cartItemIds) {
+            Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+            if (!cartItemOptional.isPresent()) {
+                throw new NotFoundException(String.format("Không tìm thấy mục giỏ hàng với id %d", cartItemId));
+            }
+
+            CartItem cartItem = cartItemOptional.get();
             int requestedQuantity = cartItem.getQuantity();
             int availableQuantity = cartItem.getProduct().getQuantity();
 
@@ -95,75 +96,81 @@ public class CartServiceImpl implements CartService {
         }
 
         if (allItemsAvailable) {
-            return new BaseResponse(true, "Mua hàng thành công");
+            return new BaseResponse(true, "Check out thành công");
         } else {
-            return new BaseResponse(false, "Sản phẩm trong kho không đủ", itemCheckResults);
+            return new BaseResponse(false, "Sản phẩm không được vượt quá số lượng trong kho", itemCheckResults);
         }
     }
     @Override
     @Transactional
     public BaseResponse placeorder(PlaceOrderRequestDTO orderRequestDTO) {
         try {
-            Optional<Cart> cartOptional = cartRepository.findById(orderRequestDTO.getCartID());
-            if (!cartOptional.isPresent()) {
-                throw new NotFoundException(String.format("Không tìm thấy giỏ hàng với id %d", orderRequestDTO.getCartID()));
-            }
-
-            User user = userRepository.findById(cartOptional.get().getUser().getUserID())
-                    .orElseThrow(() -> new NotFoundException(String.format("Không tìm thấy khách hàng với id %d", cartOptional.get().getUser().getUserID())));
-
-            Order order = new Order();
-            order.setPhoneNumber(orderRequestDTO.getPhone());
-            order.setAddress(orderRequestDTO.getAddress());
-            order.setStatus(EnumOrderStatus.WAITING);
-            order.setPaymentMethod(orderRequestDTO.getPaymentMethod());
-            order.setUser(user);
-            order.setUserName(orderRequestDTO.getFirstName() + " " + orderRequestDTO.getLastName());
-            order.setOrderDate(orderRequestDTO.getOrderDate());
-
-            List<ItemCheckResultDTO> itemCheckResults = new ArrayList<>();
-            List<OrderItem> orderDetails = new ArrayList<>();
-            float totalValue = 0.0f;
-            List<CartItem> cartItems = cartOptional.get().getItems();
-            for (CartItem itemDTO : cartItems) {
-                Optional<Product> productOptional = productRepository.findById(itemDTO.getProduct().getProductID());
-                if (!productOptional.isPresent()) {
-                    throw new NotFoundException(String.format("Không tìm thấy sản phẩm với id %d", itemDTO.getProduct().getProductID()));
-                }
-                Product product = productOptional.get();
-
-                if (product.getQuantity() < itemDTO.getQuantity()) {
-                    ItemCheckResultDTO itemCheckResult = new ItemCheckResultDTO(product.getProductName(), itemDTO.getQuantity(), product.getQuantity(), false);
-                    itemCheckResults.add(itemCheckResult);
-                } else {
-                    product.setQuantity(product.getQuantity() - itemDTO.getQuantity());
-                    productRepository.save(product);
-                    float itemTotal = itemDTO.getProduct().getPrice() * itemDTO.getQuantity();
-                    totalValue += itemTotal;
-
-                    OrderItem orderDetail = new OrderItem();
-                    orderDetail.setProduct(itemDTO.getProduct());
-                    orderDetail.setQuantity(itemDTO.getQuantity());
-                    orderDetail.setOrder(order);
-                    orderDetails.add(orderDetail);
+            List<Integer> cartItemIds = orderRequestDTO.getCartItemID();
+            Integer firstCartItemId = cartItemIds.get(0);
+            Optional<CartItem> cartItemOptional_1 = cartItemRepository.findById(firstCartItemId);
+            for (Integer cartItemId : cartItemIds) {
+                Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+                if (!cartItemOptional.isPresent()) {
+                    throw new NotFoundException(String.format("Không tìm thấy mục giỏ hàng với id %d", cartItemId));
                 }
             }
-            order.setTotalValue(totalValue);
-            orderDetailRepository.saveAll(orderDetails);
-            order.setOrderItemList(orderDetails);
-            orderRepository.save(order);
-            if (!itemCheckResults.isEmpty()) {
-                return new BaseResponse(false, "Sản phẩm trong kho không đủ", itemCheckResults);
+            Optional<Cart> cartOptional1 = cartRepository.findById(cartItemOptional_1.get().getCart().getCartID());
+
+            User user = userRepository.findById(cartOptional1.get().getUser().getUserID())
+                        .orElseThrow(() -> new NotFoundException(String.format("Không tìm thấy khách hàng với id %d", cartOptional1.get().getUser().getUserID())));
+
+                Order order = new Order();
+                order.setPhoneNumber(orderRequestDTO.getPhone());
+                order.setAddress(orderRequestDTO.getAddress());
+                order.setStatus(EnumOrderStatus.WAITING);
+                order.setPaymentMethod(orderRequestDTO.getPaymentMethod());
+                order.setUser(user);
+                order.setUserName(orderRequestDTO.getFirstName() + " " + orderRequestDTO.getLastName());
+                order.setOrderDate(orderRequestDTO.getOrderDate());
+
+                List<ItemCheckResultDTO> itemCheckResults = new ArrayList<>();
+                List<OrderItem> orderDetails = new ArrayList<>();
+                float totalValue = 0.0f;
+                 for (Integer itemID : cartItemIds) {
+                     Optional<CartItem> cartItemOptional = cartItemRepository.findById(itemID);
+                    Optional<Product> productOptional = productRepository.findById(cartItemOptional.get().getProduct().getProductID());
+                    if (!productOptional.isPresent()) {
+                        throw new NotFoundException(String.format("Không tìm thấy sản phẩm với id %d", cartItemOptional.get().getProduct().getProductID()));
+                    }
+                    Product product = productOptional.get();
+
+                    if (product.getQuantity() < cartItemOptional.get().getQuantity()) {
+                        ItemCheckResultDTO itemCheckResult = new ItemCheckResultDTO(product.getProductName(), cartItemOptional.get().getQuantity(), product.getQuantity(), false);
+                        itemCheckResults.add(itemCheckResult);
+                    } else {
+                        product.setQuantity(product.getQuantity() - cartItemOptional.get().getQuantity());
+                        productRepository.save(product);
+                        float itemTotal = cartItemOptional.get().getProduct().getPrice() * cartItemOptional.get().getQuantity();
+                        totalValue += itemTotal;
+
+                        OrderItem orderDetail = new OrderItem();
+                        orderDetail.setProduct(cartItemOptional.get().getProduct());
+                        orderDetail.setQuantity(cartItemOptional.get().getQuantity());
+                        orderDetail.setOrder(order);
+                        orderDetails.add(orderDetail);
+                    }
+                }
+                order.setTotalValue(totalValue);
+                orderDetailRepository.saveAll(orderDetails);
+                order.setOrderItemList(orderDetails);
+                orderRepository.save(order);
+                if (!itemCheckResults.isEmpty()) {
+                    return new BaseResponse(false, "Sản phẩm không vượt quá số lượng trong kho", itemCheckResults);
+                }
+                return new BaseResponse(true, "Đặt hàng thành công");
+            } catch(NotFoundException ex){
+                // Xử lý ngoại lệ NotFoundException
+                return new BaseResponse(false, ex.getMessage());
+            } catch(Exception ex){
+                // Xử lý các ngoại lệ khác
+                return new BaseResponse(false, "An error occurred during order placement");
             }
-            return new BaseResponse(true, "Đặt hàng thành công");
-        } catch (NotFoundException ex) {
-            // Xử lý ngoại lệ NotFoundException
-            return new BaseResponse(false, ex.getMessage());
-        } catch (Exception ex) {
-            // Xử lý các ngoại lệ khác
-            return new BaseResponse(false, "An error occurred during order placement");
         }
-    }
     @Override
     @Transactional
     public BaseResponse createItem(ItemRequestDTO itemRequestDTO) {
@@ -196,13 +203,13 @@ public class CartServiceImpl implements CartService {
 //                item.setThumbnail(productImage.getPath());
                 item.setQuantity(itemRequestDTO.getQuantity());
                 item.setCart(cart.get());
-            } else throw new RuntimeException("Sản phẩm vượt quá số lượng trong kho");
+            } else throw new RuntimeException("Vượt quá số lượng tồn kho");
         } else {
             int totalQuantity = itemOptional.get().getQuantity() + itemRequestDTO.getQuantity();
             if (totalQuantity <= quantityProduct) {
                 item = itemOptional.get();
                 item.setQuantity(totalQuantity);
-            } else throw new RuntimeException("Sản phẩm vượt quá số lượng trong kho");
+            } else throw new RuntimeException("Vượt quá số lượng tồn kho");
         }
         itemRepository.save(item);
         return new BaseResponse(true, "Thêm vào giỏ hàng thành công");
@@ -214,7 +221,7 @@ public class CartServiceImpl implements CartService {
                 new NotFoundException(String.format("Item with id %d not found", itemId)));
         itemRepository.delete(item);
 
-        return new BaseResponse(true, "Đã xóa sản phẩm khỏi giỏ hàng");
+        return new BaseResponse(true, "Delete successfully");
     }
     @Override
     public BaseResponse updateItemQuantity(ItemEditRequestDTO itemEditRequestDTO) {
@@ -222,10 +229,9 @@ public class CartServiceImpl implements CartService {
         CartItem item = itemOptional.get();
         int quantityProduct = item.getProduct().getQuantity();
         int newQuantity = itemEditRequestDTO.getQuantity();
-        String notification = "Chỉ còn" + String.valueOf(quantityProduct) + "sản phẩm trong kho";
 
         if (newQuantity > quantityProduct) {
-            throw new RuntimeException(notification);
+            throw new RuntimeException("Vượt quá số lượng trong kho");
         }
 
         item.setQuantity(newQuantity);

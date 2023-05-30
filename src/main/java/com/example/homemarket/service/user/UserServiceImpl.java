@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService{
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('0','9').build();
         Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
         if(existingUser.isPresent() && existingUser.get().getIsActive()==true){
-            userDTO.setStatus("Tài khoản đã đăng ký");
+            userDTO.setStatus("Tài khoản đã đươc đăng ký");
             userDTO.setIsActive(true);
             return userDTO;
         }
