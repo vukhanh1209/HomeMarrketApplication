@@ -24,4 +24,6 @@ public class PlaceOrderRequestDTO {
     private String phone;
     private EnumPaymentMethod paymentMethod;
     private Integer cartID;
+    private String firstName;
+    private  String lastName;
 }

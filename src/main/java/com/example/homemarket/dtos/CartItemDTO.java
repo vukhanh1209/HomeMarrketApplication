@@ -24,7 +24,8 @@ public class CartItemDTO {
     private Integer productId;
 
     private Integer cartId;
-
+    private String urlImage;
+    private String categoryName;
 
     public CartItemDTO(CartItem item){
         this.setCartItemid(item.getCartItemID());
@@ -34,5 +35,7 @@ public class CartItemDTO {
         this.setPrice(item.getProduct().getPrice());
         this.setProductId(item.getProduct().getProductID());
         this.setCartId(item.getCart().getCartID());
+        this.setUrlImage(item.getProduct().getProductImageURL());
+        this.setCategoryName(item.getProduct().getCategory().getCategoryName());
     }
 }
