@@ -19,34 +19,15 @@ public class ProductController {
 
       private final ProductService productService;
 
-//    private final ProductDetailService productDetailService;
-//    private final CloudinaryService cloudinaryService;
-
-    public ProductController(ProductService productService){//, ProductDetailService productDetailService, CloudinaryService cloudinaryService) {
+    public ProductController(ProductService productService){
         this.productService = productService;
-//        this.productDetailService = productDetailService;
-//        this.cloudinaryService = cloudinaryService;
     }
     @CrossOrigin
     @GetMapping("/all")
     public ResponseEntity<List<ProductDTO>> getAllProduct(){
         return new ResponseEntity<>(productService.getAllProduct(), HttpStatus.OK);
     }
-//    @PostMapping
-//    public ResponseEntity<Product> create(@RequestPart ProductDetailDTO productDetailDTO,
-//                                          @RequestPart("thumbnail") MultipartFile thumbnail,
-//                                          @RequestPart("images") List<MultipartFile> images){
-//        try{
-//            Product product = productService.addProduct(productDetailDTO,thumbnail, images);
-//            return ResponseEntity.ok().body(product);
-//        }catch (Exception e){
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error adding product",e);
-//        }
-//    }
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ProductDetailDTO> getDetailProduct(@PathVariable Integer id){
-//        return new ResponseEntity<>(productDetailService.getProductDetail(id),HttpStatus.OK);
-//    }
+
     @CrossOrigin
     @GetMapping("/search")
     public ResponseEntity<List<ProductDTO>> getSearchProduct(@RequestParam("key") String query){

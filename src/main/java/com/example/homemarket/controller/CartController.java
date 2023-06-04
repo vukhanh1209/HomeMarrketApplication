@@ -30,11 +30,6 @@ public class CartController {
     }
 
 
-//   @GetMapping("/{id}")
-//    public ResponseEntity<CheckoutDTO> getCheckout(@PathVariable Integer id){
-//        return ResponseEntity.ok(cartService.getCheckoutInfo(id));
-//    }
-
     @CrossOrigin
     @GetMapping("/checkout")
     public ResponseEntity<BaseResponse> checkout(@RequestParam("key") List<Integer> cartItemId) {
